@@ -9,14 +9,12 @@ public class TaskList {
         this.tasks = tasks;
     }
 
-    public void printTasks() {
-        if (tasks.isEmpty()) {
-            System.out.println("No tasks available for this case.");
-        } else {
-            System.out.println("Case Tasks:");
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.printf("%d. %s%n", i + 1, tasks.get(i));
-            }
-        }
+    // Provide data access instead of IO
+    public List<String> getTasks() {
+        return tasks;
+    }
+
+    public boolean isEmpty() {
+        return tasks.isEmpty();
     }
 }

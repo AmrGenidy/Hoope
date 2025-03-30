@@ -1,37 +1,32 @@
 package Commands;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CommandFactory {
+
+    private static final Map<String, Command> commandMap = new HashMap<>();
+
+    static {
+        // Initialize all commands once and cache them
+        commandMap.put("start case", new StartCaseCommand());
+        commandMap.put("look", new LookCommand());
+        commandMap.put("move", new MoveCommand());
+        commandMap.put("examine", new ExamineCommand());
+        commandMap.put("question", new QuestionCommand());
+        commandMap.put("journal", new JournalCommand());
+        commandMap.put("journal add", new JournalAddCommand()); // Added for completeness
+        commandMap.put("deduce", new DeduceCommand());
+        commandMap.put("final exam", new FinalExamCommand()); // Fixed command name
+        commandMap.put("ask watson", new AskWatsonCommand());
+        commandMap.put("help", new HelpCommand());
+        commandMap.put("add", new AddCaseCommand());
+        commandMap.put("tasks", new TaskCommand());
+        commandMap.put("exit", new ExitCommand());
+    }
+
     public static Command getCommand(String commandName) {
-        switch(commandName.toLowerCase()) {
-            case "start case":
-                return new StartCaseCommand();
-            case "look":
-                return new LookCommand();
-            case "move":
-                return new MoveCommand();
-            case "examine":
-                return new ExamineCommand();
-            case "question":
-                return new QuestionCommand();
-            case "journal":
-                return new JournalCommand();
-            case "deduce":
-                return new DeduceCommand();
-            case "final":
-                return new FinalExamCommand();
-            case "ask watson":
-                return new AskWatsonCommand();
-            case "ask":
-                return new AskWatsonCommand();
-            case "help":
-                return new HelpCommand();
-            case "add":
-                return new AddCaseCommand();
-            case "tasks":
-                return new TaskCommand();
-            default:
-                return null;
-        }
+        // Handle case-insensitive lookup
+        return commandMap.get(commandName.toLowerCase());
     }
 }
-

@@ -11,7 +11,7 @@ public class LookCommand implements Command {
         Room current = context.getBuilding().getCurrentRoom();
         System.out.println(current.getDescription());
         System.out.println(current.getObjectsDescription());
-
+        System.out.println(context.getBuilding().getOccupantsDescription()); // Room description
 
         // Format exits
         Map<String, Room> neighbors = current.getNeighbors();
@@ -20,12 +20,10 @@ public class LookCommand implements Command {
             for (Map.Entry<String, Room> entry : neighbors.entrySet()) {
                 System.out.print(entry.getKey() + " (" + entry.getValue().getName() + ") ");
             }
-            System.out.println();
+            System.out.println(); // Newline after exits
         } else {
             System.out.println("Exits: None");
         }
-
-        System.out.println(context.getBuilding().getOccupantsDescription());
 
     }
 }

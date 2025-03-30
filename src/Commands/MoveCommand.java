@@ -1,5 +1,6 @@
 package Commands;
 
+import Core.Building;
 import Core.GameContext;
 import Core.GameObject;
 import Core.Room;
@@ -15,33 +16,47 @@ public class MoveCommand implements Command {
             return;
         }
 
-        // Attempt to move the player
+        // Extract direction from arguments
         String direction = args[1].toLowerCase();
-        Room newRoom = context.getBuilding().move(direction);
+
+        // Attempt to move the player
+        Building building = context.getBuilding();
+        Room newRoom = building.move(direction);
+
         if (newRoom == null) {
             System.out.println("You can't move in that direction.");
             return;
         }
 
-        // Update suspects and Watson movements
-        context.getBuilding().updateMovements(context.getWatson());
+        // Update suspect and Watson movements
+        building.updateMovements(context.getWatson());
 
         // Display updated room information
-        System.out.println(newRoom.getDescription()); // Room description
+        displayRoomInformation(newRoom, building);
+    }
 
-        // Print notable features (if any)
+    private void displayRoomInformation(Room room, Building building) {
+        // Print room description
+        System.out.println("\n" + room.getDescription());
+
+        // Print notable features (objects in the room)
         System.out.println("\nNotable features:");
-        for (GameObject obj : newRoom.getObjects().values()) {
-            System.out.println("- " + obj.getDescription());
+        Map<String, GameObject> objects = room.getObjects();
+        if (objects.isEmpty()) {
+            System.out.println("- No notable features in this room.");
+        } else {
+            for (GameObject obj : objects.values()) {
+                System.out.println("- " + obj.getDescription());
+            }
         }
 
-        // Print objects present
-        System.out.println("\n" + newRoom.getObjectsDescription());
+        // Print objects present in the room
+        System.out.println("\n" + room.getObjectsDescription());
 
         // Print exits
-        System.out.println(newRoom.getExitsDescription());
+        System.out.println(room.getExitsDescription());
 
-        // Print occupants
-        System.out.println(context.getBuilding().getOccupantsDescription());
+        // Print occupants in the room
+        System.out.println(building.getOccupantsDescription());
     }
 }

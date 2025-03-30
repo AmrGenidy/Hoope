@@ -2,26 +2,13 @@ package Core;
 
 import java.util.*;
 
-public class DoctorWatson {
-    private Random random = new Random();
-    private Room currentRoom;
-    private List<String> hints; // All hints loaded from JSON
-    private List<String> remainingHints; // Hints not yet provided
+public class DoctorWatson extends MovableCharacter {
+    private List<String> hints;
+    private List<String> remainingHints;
 
     public DoctorWatson(List<String> hints) {
-        this.hints = new ArrayList<>(hints); // Store all hints
-        this.remainingHints = new ArrayList<>(hints); // Initialize with all hints
-    }
-
-    public Room getCurrentRoom() { return currentRoom; }
-    public void setCurrentRoom(Room room) { currentRoom = room; }
-
-    public void randomMove(Building building) {
-        Map<String, Room> neighbors = currentRoom.getNeighbors();
-        List<Room> allowedRooms = new ArrayList<>(neighbors.values());
-        if (!allowedRooms.isEmpty()) {
-            currentRoom = allowedRooms.get(random.nextInt(allowedRooms.size()));
-        }
+        this.hints = new ArrayList<>(hints);
+        this.remainingHints = new ArrayList<>(hints);
     }
 
     public void provideHint() {

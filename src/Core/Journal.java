@@ -14,10 +14,8 @@ public class Journal {
         entries.add(entry);
     }
 
-    public void printEntries() {
-        System.out.println("Journal Contents:");
-        for (String entry : entries) {
-            System.out.println(" - " + entry);
-        }
+    // Provide data access instead of IO
+    public List<String> getEntries() {
+        return entries;
     }
 }

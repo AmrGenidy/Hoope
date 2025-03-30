@@ -24,10 +24,9 @@ public class SuspectExtractor {
     }
 
     private static Room assignStartingRoom(Suspect suspect, Building building) {
-        List<Room> allRooms = new ArrayList<>(building.getRooms().values()); // Include ALL rooms
-        if (allRooms.isEmpty()) {
-            throw new IllegalStateException("No valid rooms for suspect: " + suspect.getName());
-        }
-        return allRooms.get(new Random().nextInt(allRooms.size()));
+        return building.getRooms().values().stream()
+                .skip(new Random().nextInt(building.getRooms().size()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No valid rooms for suspect: " + suspect.getName()));
     }
 }

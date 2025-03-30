@@ -18,6 +18,7 @@ public class HelpCommand implements Command {
         System.out.println("  deduce             - Use Sherlock Holmes skills to make a deduction but be careful overusing it will decrease your rank as a detective.");
         System.out.println("  final exam         - Answer key questions to solve the case.");
         System.out.println("  add case           - Add a new mystery case.");
+        System.out.println("  exit               - Take you back to the select case menu.");
     }
 }
 

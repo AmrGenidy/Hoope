@@ -2,45 +2,36 @@ package Main;
 
 import Commands.Command;
 import Commands.CommandFactory;
+import Commands.CommandParser;
 import Core.*;
 import Extractors.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-//for New Branch
-
 public class DetectiveGameMain {
+    private static final String CASES_DIR_ENV = "CASES_DIR";
+    private static final String DEFAULT_CASES_DIR = "cases";
+
     public static void main(String[] args) {
-        List<CaseFile> cases = loadCases();
-        displayCaseMenu(cases);
-        CaseFile selectedCase = selectCase(cases);
-        startGame(selectedCase);
-    }
+        String casesDir = System.getenv().getOrDefault(CASES_DIR_ENV, DEFAULT_CASES_DIR);
+        if (args.length > 0) {
+            casesDir = args[0];
+        }
 
-    private static List<CaseFile> loadCases() {
-        List<CaseFile> cases = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-        File folder = new File("cases");
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) { // Outer loop for case selection
+                List<CaseFile> cases = CaseLoader.loadCases(casesDir);
+                displayCaseMenu(cases);
+                CaseFile selectedCase = selectCase(scanner, cases, casesDir);
 
-        if (folder.exists()) {
-            File[] files = folder.listFiles((dir, name) -> name.endsWith(".json"));
-            if (files != null) {
-                for (File file : files) {
-                    try {
-                        CaseFile caseFile = mapper.readValue(file, CaseFile.class);
-                        cases.add(caseFile);
-                    } catch (Exception e) {
-                        System.out.println("Error loading case: " + file.getName());
-                        e.printStackTrace();
-                    }
+                if (selectedCase == null) {
+                    // Reload the case list if no case is selected (e.g., after adding a case)
+                    continue;
                 }
+
+                startGame(scanner, selectedCase, casesDir);
             }
         }
-        return cases;
     }
 
     private static void displayCaseMenu(List<CaseFile> cases) {
@@ -49,80 +40,104 @@ public class DetectiveGameMain {
         System.out.println("╠══════════════════════════════════════════════════════════════════════════════════════════════╣");
 
         if (cases.isEmpty()) {
-            System.out.println("║ No cases available. Please add cases to the 'cases' folder.                                    ║");
+            System.out.println("║ No cases available. Please add cases to the cases folder.                                     ║");
         } else {
             for (int i = 0; i < cases.size(); i++) {
-                System.out.printf("║ %d. %-85s ║%n", i + 1, cases.get(i).getTitle());
+                System.out.printf("║ %d. %-89s ║%n", i + 1, cases.get(i).getTitle());
             }
         }
 
         System.out.println("╚══════════════════════════════════════════════════════════════════════════════════════════════╝");
     }
 
-    private static CaseFile selectCase(List<CaseFile> cases) {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.print("Enter the number of the case you wish to investigate: ");
+    private static CaseFile selectCase(Scanner scanner, List<CaseFile> cases, String casesDir) {
+        while (true) { // Loop until a valid case is selected or the user quits
+            System.out.print("Enter case number (0 to add case, 'quit' to exit game): ");
+            String input = scanner.nextLine().trim();
+
             try {
-                int choice = Integer.parseInt(scanner.nextLine());
-                if (choice > 0 && choice <= cases.size()) {
-                    return cases.get(choice - 1);
+                if (input.equalsIgnoreCase("quit")) {
+                    return null; // Signal to exit the game
                 }
-            } catch (NumberFormatException ignored) {}
-            System.out.println("Invalid choice. Please select a valid case number.");
+
+                if (input.equalsIgnoreCase("add case") || input.startsWith("add case ")) {
+                    handleAddCase(scanner, input, casesDir);
+                    return null; // Signal to reload the case menu
+                }
+
+                int choice = Integer.parseInt(input);
+                if (choice == 0) {
+                    handleAddCase(scanner, "add case", casesDir);
+                    return null; // Signal to reload the case menu
+                } else if (choice > 0 && choice <= cases.size()) {
+                    return cases.get(choice - 1); // Return selected case
+                } else {
+                    System.out.println("Invalid choice. Please select a valid case number.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number, 'add case', or 'quit'.");
+            }
         }
     }
 
-    private static void startGame(CaseFile caseFile) {
-        // Initialize game components
+    private static void handleAddCase(Scanner scanner, String input, String casesDir) {
+        Command addCaseCommand = CommandFactory.getCommand("add");
+        if (addCaseCommand == null) {
+            System.out.println("Error: Add case command not found.");
+            return;
+        }
+
+        if (input.equalsIgnoreCase("add case")) {
+            System.out.print("Enter the file path: ");
+            String filePath = scanner.nextLine().trim();
+            addCaseCommand.execute(new String[]{"add", "case", filePath}, null);
+        } else if (input.startsWith("add case ")) {
+            // Validate input length before extracting the file path
+            if (input.length() <= "add case ".length()) {
+                System.out.println("Error: No file path provided. Please specify a file path.");
+                return;
+            }
+            String filePath = input.substring("add case ".length()).trim();
+            addCaseCommand.execute(new String[]{"add", "case", filePath}, null);
+        } else {
+            System.out.println("Invalid input. Please type 'add case' or 'add case [file_path]'.");
+        }
+    }
+
+    private static void startGame(Scanner scanner, CaseFile caseFile, String casesDir) {
         Building building = BuildingExtractor.loadBuilding(caseFile);
         SuspectExtractor.loadSuspects(caseFile, building);
         GameObjectExtractor.loadObjects(caseFile, building);
 
-        // Initialize task list
         TaskList taskList = new TaskList(caseFile.getTasks());
-
-        // Initialize characters
         Detective detective = new Detective("Sherlock Holmes");
-        List<String> watsonHints = caseFile.getWatsonHints(); // Ensure CaseFile has this getter
-        DoctorWatson watson = new DoctorWatson(watsonHints);
+        DoctorWatson watson = new DoctorWatson(caseFile.getWatsonHints());
+        GameContext context = new GameContext(building, detective, watson, new Journal(), taskList, caseFile);
 
-        // Initialize game context
-        GameContext context = new GameContext(building, detective, watson, new Journal(), taskList, caseFile); // Pass the selected case
-
-        // Ensure Watson's starting room matches the player's starting room
         watson.setCurrentRoom(building.getCurrentRoom());
         building.setWatson(watson);
 
-        // Display case invitation immediately after selecting a case
         Letter letter = new Letter();
         LetterExtractor.loadLetter(caseFile, letter);
         letter.displayInvitation();
         System.out.println("\nNow type 'start case' to begin the investigation.");
 
-        // Command loop
-        Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("C:\\DetectiveGame> ");
+            System.out.print("<CaseFile>");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) continue;
 
-            String[] tokens = input.split(" ");
-            String commandName = tokens[0].toLowerCase();
-
-            // Handle multi-word commands explicitly
-            if (input.toLowerCase().startsWith("final exam")) commandName = "final exam";
-            if (input.toLowerCase().startsWith("journal add")) commandName = "journal add";
-            if (input.toLowerCase().startsWith("ask watson")) commandName = "ask watson";
-            if (input.toLowerCase().startsWith("start case")) commandName = "start case";
+            // Parse the command using CommandParser
+            String commandName = CommandParser.parseCommand(input);
 
             Command command = CommandFactory.getCommand(commandName);
             if (command != null) {
-                command.execute(tokens, context);
+                command.execute(input.split(" "), context);
 
-                // Update suspect/Watson positions after movement commands
-                if (commandName.equals("move") || commandName.equals("enter")) {
-                    building.updateMovements(watson);
+                // Check if user wants to exit to main menu
+                if (context.isExitCurrentGame()) {
+                    context.setExitCurrentGame(false);
+                    break;
                 }
             } else {
                 System.out.println("Unknown command. Type 'help' for a list of commands.");

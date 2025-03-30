@@ -5,11 +5,12 @@ import Core.GameContext;
 import Core.Letter;
 import Core.Room;
 import Extractors.LetterExtractor;
+import java.util.List;
 
 public class StartCaseCommand implements Command {
     @Override
     public void execute(String[] args, GameContext context) {
-        CaseFile caseFile = context.getSelectedCase(); // Retrieve the selected case
+        CaseFile caseFile = context.getSelectedCase();
         if (caseFile == null) {
             System.out.println("No case selected. Please choose a case first.");
             return;
@@ -21,32 +22,27 @@ public class StartCaseCommand implements Command {
         System.out.println("\n--- Case Description ---");
         letter.displayCaseDescription();
 
-        // Display tasks
+        // Display tasks using TaskList data instead of direct I/O
         System.out.println("\n--- Case Tasks ---");
-        context.getTaskList().printTasks();
+        List<String> tasks = context.getTaskList().getTasks();
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks available for this case.");
+        } else {
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.printf("%d. %s%n", i + 1, tasks.get(i));
+            }
+        }
 
         // Display starting room details
         Room currentRoom = context.getBuilding().getCurrentRoom();
         System.out.println("\nYou are now at the starting location: " + currentRoom.getName());
         System.out.println(currentRoom.getDescription());
-
-        System.out.println(context.getBuilding().getOccupantsDescription());
-
         displayExits(currentRoom);
-
+        System.out.println(context.getBuilding().getOccupantsDescription());
         System.out.println("\nType 'help' to see commands.");
     }
 
     private void displayExits(Room room) {
-        var neighbors = room.getNeighbors();
-        if (!neighbors.isEmpty()) {
-            System.out.print("Exits: ");
-            for (var entry : neighbors.entrySet()) {
-                System.out.print(entry.getKey() + " (" + entry.getValue().getName() + ") ");
-            }
-            System.out.println();
-        } else {
-            System.out.println("Exits: None");
-        }
+        System.out.println(room.getExitsDescription());
     }
 }

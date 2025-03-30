@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Building {
-    protected Map<String, Room> rooms = new HashMap<>();
-    protected List<Suspect> suspects = new ArrayList<>();
+public class Building {
+    protected Map<String, Room> rooms = new HashMap<>(); // Runtime room instances
+    protected List<Suspect> suspects = new ArrayList<>(); // Live suspect positions
     protected DoctorWatson watson;
-    protected Room currentRoom;
-    protected List<CaseFile> cases;
+    protected Room currentRoom; // Player's current location
+    protected List<CaseFile> cases = new ArrayList<>();
+
 
     public Building() {
         rooms = new HashMap<>();
@@ -34,22 +35,23 @@ public abstract class Building {
         return null;
     }
 
+    // Update suspect and Watson positions
     public void updateMovements(DoctorWatson watson) {
         // Move suspects
         for (Suspect suspect : suspects) {
-            suspect.randomMove(this);
+            suspect.randomMove(); // No parameter needed
         }
 
         // Move Watson
         if (watson != null) {
-            watson.randomMove(this);
+            watson.randomMove(); // No parameter needed
         }
     }
 
     // Set Watson in the building
     public void setWatson(DoctorWatson watson) {
         this.watson = watson;
-        this.watson.setCurrentRoom(this.currentRoom);
+        this.watson.setCurrentRoom(this.currentRoom); // Sync with building's current room
     }
 
     public String getOccupantsDescription() {
@@ -81,6 +83,7 @@ public abstract class Building {
         rooms.put(room.getName(), room); // Requires Room.getName()
     }
 
+    // Method to add a case to the building
     public void addCase(CaseFile newCase) {
         cases.add(newCase);
     }

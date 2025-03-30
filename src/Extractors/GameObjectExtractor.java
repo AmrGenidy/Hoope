@@ -17,7 +17,7 @@ public class GameObjectExtractor {
                             return objData.getDeduce();
                         }
                     };
-                    room.addObject(obj.getName(), obj); // Now works
+                    room.addObject(obj.getName(), obj);
                 }
             }
         }
