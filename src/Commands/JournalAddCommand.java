@@ -16,5 +16,10 @@ public class JournalAddCommand implements Command {
         context.getJournal().addEntry(note.toString().trim());
         System.out.println("Note added to journal.");
     }
+
+    @Override
+    public String getDescription() {
+        return "Save a clue in your journal.";
+    }
 }
 

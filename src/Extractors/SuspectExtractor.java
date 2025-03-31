@@ -3,10 +3,8 @@ package Extractors;
 import Core.Building;
 import Core.Room;
 import Core.Suspect;
-import Core.CaseFile;
+import JsonDTO.CaseFile;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class SuspectExtractor {

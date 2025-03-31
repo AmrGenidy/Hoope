@@ -1,10 +1,11 @@
 package Commands;
 
-import Core.CaseFile;
 import Core.GameContext;
 import Core.Letter;
 import Core.Room;
 import Extractors.LetterExtractor;
+import JsonDTO.CaseFile;
+
 import java.util.List;
 
 public class StartCaseCommand implements Command {
@@ -40,9 +41,17 @@ public class StartCaseCommand implements Command {
         displayExits(currentRoom);
         System.out.println(context.getBuilding().getOccupantsDescription());
         System.out.println("\nType 'help' to see commands.");
+
+        // Set the flag to indicate the case has started
+        context.setCaseStarted(true);
     }
 
     private void displayExits(Room room) {
         System.out.println(room.getExitsDescription());
+    }
+
+    @Override
+    public String getDescription() {
+        return "Show the case description.";
     }
 }

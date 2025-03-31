@@ -5,6 +5,8 @@ import Commands.CommandFactory;
 import Commands.CommandParser;
 import Core.*;
 import Extractors.*;
+import JsonDTO.CaseFile;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -51,25 +53,31 @@ public class DetectiveGameMain {
     }
 
     private static CaseFile selectCase(Scanner scanner, List<CaseFile> cases, String casesDir) {
-        while (true) { // Loop until a valid case is selected or the user quits
+        boolean isSelecting = true; // Boolean flag to control the loop
+
+        while (isSelecting) {
             System.out.print("Enter case number (0 to add case, 'quit' to exit game): ");
             String input = scanner.nextLine().trim();
 
             try {
                 if (input.equalsIgnoreCase("quit")) {
-                    return null; // Signal to exit the game
+                    System.out.println("Exiting the game. Goodbye!");
+                    System.exit(0);; // Exit the loop
                 }
 
                 if (input.equalsIgnoreCase("add case") || input.startsWith("add case ")) {
                     handleAddCase(scanner, input, casesDir);
+                    isSelecting = false; // Exit the loop
                     return null; // Signal to reload the case menu
                 }
 
                 int choice = Integer.parseInt(input);
                 if (choice == 0) {
                     handleAddCase(scanner, "add case", casesDir);
+                    isSelecting = false; // Exit the loop
                     return null; // Signal to reload the case menu
                 } else if (choice > 0 && choice <= cases.size()) {
+                    isSelecting = false; // Exit the loop
                     return cases.get(choice - 1); // Return selected case
                 } else {
                     System.out.println("Invalid choice. Please select a valid case number.");
@@ -78,6 +86,9 @@ public class DetectiveGameMain {
                 System.out.println("Invalid input. Please enter a number, 'add case', or 'quit'.");
             }
         }
+
+        // If the loop exits without returning, return null as a fallback
+        return null;
     }
 
     private static void handleAddCase(Scanner scanner, String input, String casesDir) {
@@ -106,7 +117,17 @@ public class DetectiveGameMain {
 
     private static void startGame(Scanner scanner, CaseFile caseFile, String casesDir) {
         Building building = BuildingExtractor.loadBuilding(caseFile);
-        SuspectExtractor.loadSuspects(caseFile, building);
+        if (building == null) {
+            // If building is null, it means there were errors during case loading
+            return; // Exit to case selection menu
+        }
+
+        try {
+            SuspectExtractor.loadSuspects(caseFile, building);
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            return; // Reload the case menu
+        }
         GameObjectExtractor.loadObjects(caseFile, building);
 
         TaskList taskList = new TaskList(caseFile.getTasks());
@@ -122,7 +143,9 @@ public class DetectiveGameMain {
         letter.displayInvitation();
         System.out.println("\nNow type 'start case' to begin the investigation.");
 
-        while (true) {
+        boolean isRunning = true;
+
+        while (isRunning) {
             System.out.print("<CaseFile>");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) continue;
@@ -130,14 +153,27 @@ public class DetectiveGameMain {
             // Parse the command using CommandParser
             String commandName = CommandParser.parseCommand(input);
 
+            // Allow "help" and "quit" commands to work before starting the case
+            if (!context.isCaseStarted() && !commandName.equalsIgnoreCase("start case") &&
+                    !commandName.equalsIgnoreCase("help") && !commandName.equalsIgnoreCase("exit")) {
+                System.out.println("The case has not started yet. Type 'start case' to begin the investigation.");
+                continue;
+            }
+
             Command command = CommandFactory.getCommand(commandName);
             if (command != null) {
                 command.execute(input.split(" "), context);
 
+                // Handle quitting the game
+                if (commandName.equalsIgnoreCase("quit")) {
+                    System.out.println("Exiting the game. Goodbye!");
+                    System.exit(0); // Terminate the program
+                }
+
                 // Check if user wants to exit to main menu
                 if (context.isExitCurrentGame()) {
-                    context.setExitCurrentGame(false);
-                    break;
+                    context.setExitCurrentGame(false); // Reset the flag for future games
+                    isRunning = false; // Exit the loop
                 }
             } else {
                 System.out.println("Unknown command. Type 'help' for a list of commands.");

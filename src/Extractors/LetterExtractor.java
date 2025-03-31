@@ -1,6 +1,6 @@
 package Extractors;
 
-import Core.CaseFile;
+import JsonDTO.CaseFile;
 import Core.Letter;
 
 public class LetterExtractor {

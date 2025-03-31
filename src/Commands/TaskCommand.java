@@ -18,4 +18,9 @@ public class TaskCommand implements Command {
             }
         }
     }
+
+    @Override
+    public String getDescription() {
+        return "View your investigation guide.";
+    }
 }

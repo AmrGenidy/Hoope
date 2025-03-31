@@ -1,6 +1,6 @@
 package Commands;
 
-import Core.CaseFile;
+import JsonDTO.CaseFile;
 import Core.GameContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -87,4 +87,10 @@ public class AddCaseCommand implements Command {
         }
         return cases;
     }
+
+    @Override
+    public String getDescription() {
+        return "Add a new mystery case to the game.";
+    }
+
 }

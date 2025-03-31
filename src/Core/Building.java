@@ -1,5 +1,7 @@
 package Core;
 
+import JsonDTO.CaseFile;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,10 +85,6 @@ public class Building {
         rooms.put(room.getName(), room); // Requires Room.getName()
     }
 
-    // Method to add a case to the building
-    public void addCase(CaseFile newCase) {
-        cases.add(newCase);
-    }
 
     public Room getRoomByName(String name) {
         return rooms.get(name);

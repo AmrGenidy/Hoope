@@ -1,23 +1,22 @@
 package Commands;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CommandFactory {
-
-    private static final Map<String, Command> commandMap = new HashMap<>();
+    private static final Map<String, Command> commandMap = new LinkedHashMap<>();
 
     static {
-        // Initialize all commands once and cache them
+        // Initialize all commands in the desired order
         commandMap.put("start case", new StartCaseCommand());
         commandMap.put("look", new LookCommand());
         commandMap.put("move", new MoveCommand());
         commandMap.put("examine", new ExamineCommand());
         commandMap.put("question", new QuestionCommand());
         commandMap.put("journal", new JournalCommand());
-        commandMap.put("journal add", new JournalAddCommand()); // Added for completeness
+        commandMap.put("journal add", new JournalAddCommand());
         commandMap.put("deduce", new DeduceCommand());
-        commandMap.put("final exam", new FinalExamCommand()); // Fixed command name
+        commandMap.put("final exam", new FinalExamCommand());
         commandMap.put("ask watson", new AskWatsonCommand());
         commandMap.put("help", new HelpCommand());
         commandMap.put("add", new AddCaseCommand());
@@ -26,7 +25,10 @@ public class CommandFactory {
     }
 
     public static Command getCommand(String commandName) {
-        // Handle case-insensitive lookup
         return commandMap.get(commandName.toLowerCase());
+    }
+
+    public static Map<String, Command> getCommands() {
+        return commandMap; // Return the ordered map
     }
 }

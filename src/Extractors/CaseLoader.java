@@ -1,6 +1,6 @@
 package Extractors;
 
-import Core.CaseFile;
+import JsonDTO.CaseFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.ArrayList;

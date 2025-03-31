@@ -13,8 +13,9 @@ public class DeduceCommand implements Command {
         }
 
         String objectName = args[1].toLowerCase();
-        Room currentRoom = context.getBuilding().getCurrentRoom();
+        Room currentRoom = context.getBuilding().getCurrentRoom(); // Use getBuilding()
 
+        // Ensure Room has getObject()
         GameObject obj = currentRoom.getObject(objectName);
 
         if (obj != null) {
@@ -28,5 +29,10 @@ public class DeduceCommand implements Command {
         } else {
             System.out.println("No such object in this room.");
         }
+    }
+
+    @Override
+    public String getDescription() {
+        return " Use Sherlock Holmes skills to make a deduction but be careful overusing it will decrease your rank as a detective.";
     }
 }

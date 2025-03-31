@@ -8,4 +8,9 @@ public class ExitCommand implements Command {
         System.out.println("Exiting Case. Goodbye!");
         context.setExitCurrentGame(true); //Signal to exit game loop
     }
+
+    @Override
+    public String getDescription() {
+        return "Take you back to the select case menu.";
+    }
 }

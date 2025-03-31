@@ -1,6 +1,8 @@
 package Core;
 
 
+import JsonDTO.CaseFile;
+
 public class GameContext {
     private Building building; // Dynamic game world
     private Detective detective;
@@ -9,6 +11,7 @@ public class GameContext {
     private TaskList taskList;
     private CaseFile selectedCase; // Centralized case reference
     private boolean exitCurrentGame = false;
+    private boolean isCaseStarted = false;
 
     public GameContext(Building building, Detective detective, DoctorWatson watson, Journal journal, TaskList taskList, CaseFile selectedCase) {
         this.building = building;
@@ -20,9 +23,6 @@ public class GameContext {
 
     }
 
-    public void setBuilding(Building building) {
-        this.building = building;
-    }
 
     public void setJournal(Journal journal) {
         this.journal = journal;
@@ -32,6 +32,15 @@ public class GameContext {
         this.taskList = taskList;
     }
 
+    public boolean isCaseStarted() {
+        return isCaseStarted;
+    }
+
+    public void setCaseStarted(boolean isCaseStarted) {
+        this.isCaseStarted = isCaseStarted;
+    }
+
+
     // Getters
     public CaseFile getSelectedCase() { return selectedCase; }
     public Building getBuilding() { return building; } // Replaces getMansion()
@@ -39,9 +48,6 @@ public class GameContext {
     public DoctorWatson getWatson() { return watson; }
     public Journal getJournal() { return journal; }
     public TaskList getTaskList() { return taskList;}
-    private boolean caseSolved = false;
-    public void setCaseSolved(boolean solved) { this.caseSolved = solved; }
-    public boolean isCaseSolved() { return caseSolved; }
     public boolean isExitCurrentGame() { return exitCurrentGame; }
     public void setExitCurrentGame(boolean exit) { this.exitCurrentGame = exit; }
 }

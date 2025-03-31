@@ -1,4 +1,4 @@
-package Core;
+package JsonDTO;
 
 import java.util.List;
 import java.util.Map;

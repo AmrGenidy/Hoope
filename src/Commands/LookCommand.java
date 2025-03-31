@@ -26,4 +26,9 @@ public class LookCommand implements Command {
         }
 
     }
+
+    @Override
+    public String getDescription() {
+        return "View your surroundings.";
+    }
 }

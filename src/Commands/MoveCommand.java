@@ -59,4 +59,8 @@ public class MoveCommand implements Command {
         // Print occupants in the room
         System.out.println(building.getOccupantsDescription());
     }
+
+    public String getDescription() {
+        return "Move north, south, east, west, up, or down.";
+    }
 }

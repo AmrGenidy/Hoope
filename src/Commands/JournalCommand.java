@@ -20,4 +20,8 @@ public class JournalCommand implements Command {
             }
         }
     }
+    @Override
+    public String getDescription() {
+        return "Review your collected clues.";
+    }
 }

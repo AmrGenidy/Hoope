@@ -15,7 +15,7 @@ public class ExamineCommand implements Command {
         String objectName = args[1].toLowerCase(); // Normalize object name
         Room currentRoom = context.getBuilding().getCurrentRoom();
 
-        // Retrieve the objects from the current room
+        // Retrieve the object from the current room
         GameObject obj = currentRoom.getObject(objectName);
 
         if (obj != null) {
@@ -27,5 +27,10 @@ public class ExamineCommand implements Command {
         } else {
             System.out.println("No such object in this room.");
         }
+    }
+
+    @Override
+    public String getDescription() {
+        return "Inspect an item for clues.";
     }
 }

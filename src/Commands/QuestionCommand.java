@@ -12,7 +12,7 @@ public class QuestionCommand implements Command {
         }
 
         String suspectName = args[1];
-        Suspect suspect = context.getBuilding().getSuspect(suspectName);
+        Suspect suspect = context.getBuilding().getSuspect(suspectName); // Now resolves
 
         if (suspect != null) {
             if (suspect.getCurrentRoom() == context.getBuilding().getCurrentRoom()) {
@@ -25,5 +25,10 @@ public class QuestionCommand implements Command {
         } else {
             System.out.println("Suspect not found: " + suspectName);
         }
+    }
+
+    @Override
+    public String getDescription() {
+        return "Interrogate a suspect.";
     }
 }
