@@ -14,10 +14,6 @@ public class AddCaseCommand implements Command {
 
     @Override
     public void execute(String[] args, GameContext context) {
-        if (!context.isCaseStarted()) {
-            System.out.println("The case has not started yet. Type 'start case' to begin the investigation.");
-            return;
-        }
 
         if (args.length < 3 || !args[1].equalsIgnoreCase("case")) {
             System.out.println("Usage: add case [file_path]");
