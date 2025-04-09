@@ -1,6 +1,5 @@
 package Core;
 
-
 import JsonDTO.CaseFile;
 
 public class GameContext {
@@ -13,16 +12,20 @@ public class GameContext {
     private boolean exitCurrentGame = false;
     private boolean isCaseStarted = false;
 
-    public GameContext(Building building, Detective detective, DoctorWatson watson, Journal journal, TaskList taskList, CaseFile selectedCase) {
+    public GameContext(
+            Building building,
+            Detective detective,
+            DoctorWatson watson,
+            Journal journal,
+            TaskList taskList,
+            CaseFile selectedCase) {
         this.building = building;
         this.detective = detective;
         this.watson = watson;
         this.journal = journal;
         this.taskList = taskList;
         this.selectedCase = selectedCase;
-
     }
-
 
     public void setJournal(Journal journal) {
         this.journal = journal;
@@ -40,14 +43,36 @@ public class GameContext {
         this.isCaseStarted = isCaseStarted;
     }
 
-
     // Getters
-    public CaseFile getSelectedCase() { return selectedCase; }
-    public Building getBuilding() { return building; } // Replaces getMansion()
-    public Detective getDetective() { return detective; }
-    public DoctorWatson getWatson() { return watson; }
-    public Journal getJournal() { return journal; }
-    public TaskList getTaskList() { return taskList;}
-    public boolean isExitCurrentGame() { return exitCurrentGame; }
-    public void setExitCurrentGame(boolean exit) { this.exitCurrentGame = exit; }
+    public CaseFile getSelectedCase() {
+        return selectedCase;
+    }
+
+    public Building getBuilding() {
+        return building;
+    } // Replaces getMansion()
+
+    public Detective getDetective() {
+        return detective;
+    }
+
+    public DoctorWatson getWatson() {
+        return watson;
+    }
+
+    public Journal getJournal() {
+        return journal;
+    }
+
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public boolean isExitCurrentGame() {
+        return exitCurrentGame;
+    }
+
+    public void setExitCurrentGame(boolean exit) {
+        this.exitCurrentGame = exit;
+    }
 }
