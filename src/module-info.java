@@ -6,8 +6,8 @@
  */
 module MyDetectiveGame {
     requires com.fasterxml.jackson.databind;
-    exports Core;
-    opens Core;
-    exports JsonDTO;
-    opens JsonDTO; // Add this line for reflection
+    exports main.java.Core;
+    opens main.java.Core;
+    exports main.java.JsonDTO;
+    opens main.java.JsonDTO; // Add this line for reflection
 }
