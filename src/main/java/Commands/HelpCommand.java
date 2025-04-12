@@ -3,9 +3,12 @@ package Commands;
 import Core.GameContext;
 import java.util.Map;
 
-public class HelpCommand implements Command {
+public class HelpCommand extends BaseCommand {
+    public HelpCommand() {
+        super(true); // Requires the case to be started
+    }
     @Override
-    public void execute(String[] args, GameContext context) {
+    public void executeCommand(String[] args, GameContext context) {
         System.out.println("Available commands:");
 
         // Dynamically retrieve the list of commands from CommandFactory

@@ -3,14 +3,12 @@ package Commands;
 import Core.GameContext;
 import Core.Suspect;
 
-public class QuestionCommand implements Command {
+public class QuestionCommand extends BaseCommand {
+    public QuestionCommand() {
+        super(true); // Requires the case to be started
+    }
     @Override
-    public void execute(String[] args, GameContext context) {
-
-        if (!context.isCaseStarted()) {
-            System.out.println("The case has not started yet. Type 'start case' to begin the investigation.");
-            return;
-        }
+    public void executeCommand(String[] args, GameContext context) {
 
         if (args.length < 2) {
             System.out.println("Usage: question [suspect]");

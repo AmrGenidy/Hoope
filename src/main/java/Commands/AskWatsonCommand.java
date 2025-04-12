@@ -2,22 +2,25 @@ package Commands;
 
 import Core.GameContext;
 
-public class AskWatsonCommand implements Command {
+public class AskWatsonCommand extends BaseCommand {
+    public AskWatsonCommand() {
+        super(true); // Requires the case to be started
+    }
     @Override
-    public void execute(String[] args, GameContext context) {
-        if (!context.isCaseStarted()) {
-            System.out.println("The case has not started yet. Type 'start case' to begin the investigation.");
-            return;
-        }
+    public void executeCommand(String[] args, GameContext context) {
 
         // Use getBuilding() instead of getMansion()
-        if (context.getWatson().getCurrentRoom().getName().equals(
-                context.getBuilding().getCurrentRoom().getName())) {
+        if (context
+                .getWatson()
+                .getCurrentRoom()
+                .getName()
+                .equals(context.getBuilding().getCurrentRoom().getName())) {
             context.getWatson().provideHint();
         } else {
             System.out.println("Dr. Watson is not in this room.");
         }
     }
+
     @Override
     public String getDescription() {
         return "Ask Doctor Watson for a hint or his point of view.";

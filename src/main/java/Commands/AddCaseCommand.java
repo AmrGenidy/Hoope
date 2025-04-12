@@ -1,20 +1,22 @@
 package Commands;
 
-import JsonDTO.CaseFile;
 import Core.GameContext;
+import JsonDTO.CaseFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddCaseCommand implements Command {
+public class AddCaseCommand extends BaseCommand {
     private static final String DEFAULT_CASES_DIR = "cases";
 
-    @Override
-    public void execute(String[] args, GameContext context) {
+    public AddCaseCommand() {
+        super(false); // Does NOT require the case to be started
+    }
 
+    @Override
+    protected void executeCommand(String[] args, GameContext context) {
         if (args.length < 3 || !args[1].equalsIgnoreCase("case")) {
             System.out.println("Usage: add case [file_path]");
             return;
@@ -93,5 +95,4 @@ public class AddCaseCommand implements Command {
     public String getDescription() {
         return "Add a new mystery case to the game.";
     }
-
 }

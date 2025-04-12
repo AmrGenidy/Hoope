@@ -3,13 +3,12 @@ package Commands;
 import Core.GameContext;
 import Core.TaskList;
 
-public class TaskCommand implements Command {
+public class TaskCommand extends BaseCommand {
+    public TaskCommand() {
+        super(true); // Requires the case to be started
+    }
     @Override
-    public void execute(String[] args, GameContext context) {
-        if (!context.isCaseStarted()) {
-            System.out.println("The case has not started yet. Type 'start case' to begin the investigation.");
-            return;
-        }
+    public void executeCommand(String[] args, GameContext context) {
 
         TaskList taskList = context.getTaskList();
 

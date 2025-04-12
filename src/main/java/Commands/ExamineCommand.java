@@ -4,13 +4,12 @@ import Core.GameContext;
 import Core.GameObject;
 import Core.Room;
 
-public class ExamineCommand implements Command {
+public class ExamineCommand extends BaseCommand {
+    public ExamineCommand() {
+        super(true); // Requires the case to be started
+    }
     @Override
-    public void execute(String[] args, GameContext context) {
-        if (!context.isCaseStarted()) {
-            System.out.println("The case has not started yet. Type 'start case' to begin the investigation.");
-            return;
-        }
+    public void executeCommand(String[] args, GameContext context) {
 
         if (args.length < 2) {
             System.out.println("Usage: examine [object]");

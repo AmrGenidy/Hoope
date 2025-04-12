@@ -1,16 +1,19 @@
 package Commands;
 
+import JsonDTO.CaseFile;
 import Core.GameContext;
 import Core.Letter;
 import Core.Room;
 import Extractors.LetterExtractor;
-import JsonDTO.CaseFile;
-
 import java.util.List;
 
-public class StartCaseCommand implements Command {
+public class StartCaseCommand extends BaseCommand {
+    public StartCaseCommand() {
+        super(false); // Does NOT require the case to be started
+    }
+
     @Override
-    public void execute(String[] args, GameContext context) {
+    protected void executeCommand(String[] args, GameContext context) {
         CaseFile caseFile = context.getSelectedCase();
         if (caseFile == null) {
             System.out.println("No case selected. Please choose a case first.");
