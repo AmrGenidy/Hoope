@@ -2,18 +2,22 @@ package Commands;
 
 import Core.GameContext;
 
-public class ExitCommand extends BaseCommand {
-    public ExitCommand() {
-        super(true); // Requires the case to be started
-    }
+public class ExitCommand implements Command {
     @Override
-    public void executeCommand(String[] args, GameContext context) {
-        System.out.println("Exiting Case. Goodbye!");
-        context.setExitCurrentGame(true); // Signal to exit game loop
+    public void execute(String[] args, GameContext context) {
+        // Check if the case has started
+        if (context.getSelectedCase() != null && context.getBuilding() != null) {
+            System.out.println("Exiting the current case. Returning to the case selection menu.");
+        } else {
+            System.out.println("Exiting the game. Goodbye!");
+        }
+
+        // Signal to exit the current game loop
+        context.setExitCurrentGame(true);
     }
 
     @Override
     public String getDescription() {
-        return "Take you back to the select case menu.";
+        return "Exits the current case or the game entirely.";
     }
 }

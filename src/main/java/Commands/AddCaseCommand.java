@@ -8,15 +8,19 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddCaseCommand extends BaseCommand {
+public class AddCaseCommand implements Command {
     private static final String DEFAULT_CASES_DIR = "cases";
 
-    public AddCaseCommand() {
-        super(false); // Does NOT require the case to be started
-    }
-
     @Override
-    protected void executeCommand(String[] args, GameContext context) {
+    public void execute(String[] args, GameContext context) {
+
+        // Check if the program is in the case selection menu
+        if (context == null || !context.isInCaseSelectionMenu()) {
+            System.out.println("The 'add case' command can only be used in the case selection menu.");
+            return;
+        }
+
+        // Validate input arguments
         if (args.length < 3 || !args[1].equalsIgnoreCase("case")) {
             System.out.println("Usage: add case [file_path]");
             return;

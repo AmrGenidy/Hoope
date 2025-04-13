@@ -6,6 +6,9 @@ out/
 !**/src/test/**/out/
 
 target/
+.class
+*.class
+
 lib/
 ### Eclipse ###
 .apt_generated
